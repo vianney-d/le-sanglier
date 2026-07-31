@@ -13,6 +13,10 @@ build, pas juste ce qui a été codé.
 - Flip gauche/droite en code (un seul art par personnage, vue de côté)
 - Télégraphe/charge du boss et Rage de Jean toujours rendus par teinte
   de couleur (`setTint`), pas d'anim dédiée
+- Fix : affichage mobile — `#game`/`html`/`body` n'avaient pas de
+  dimensions explicites, donc `Scale.FIT` de Phaser n'avait rien sur
+  quoi caler l'échelle (canvas illisible/mal cadré sur petit écran) ;
+  passage en `100vw`/`100vh`
 - En ligne : https://vianney-d.github.io/le-sanglier/
 
 ## [Jalon 5] — Le boss
