@@ -90,11 +90,27 @@ sensiblement la façon de jouer pendant sa durée.
 
 **Statut** : fait côté déploiement, reste ta vérification
 
+## Jalon 5 — Le boss
+
+**Objectif** : boss de fin de niveau, dernier morceau du MVP défini dans
+CLAUDE.md (déplacement + horde + boss = mini-niveau complet).
+
+- [x] Apparaît 1s après que la horde est vidée, à l'opposé de Jean
+- [x] Plus gros, plus lent qu'un ennemi basique, encaisse 6 coups avant de
+      mourir (PV affichés à l'écran)
+- [x] Pattern d'attaque simple : le boss se fige un instant (télégraphe
+      visuel) puis charge en ligne droite vers la position de Jean à cet
+      instant — évitable en bougeant
+- [x] Message de victoire ("Niveau terminé !") quand le boss est vaincu
+- [ ] Déployé et vérifié sur le lien Pages
+
+**Statut** : code fait, reste le déploiement + vérif en ligne
+
+**Ce jalon complète le MVP** défini dans CLAUDE.md (déplacement + horde +
+boss = mini-niveau complet jouable de bout en bout).
+
 ## Jalons suivants (non détaillés)
 
-- Boss simple en fin de niveau
-- → Jalon "mini-niveau complet" (le MVP défini dans CLAUDE.md) atteint quand
-  ces éléments sont assemblés en une boucle jouable de bout en bout
 - Contrôles tactiles (joystick virtuel + boutons) sur la même abstraction
   d'inputs que le clavier/souris
 

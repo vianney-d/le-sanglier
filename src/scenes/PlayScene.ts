@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { InputController } from '../input/InputController'
 import { Enemy } from '../entities/Enemy'
+import { Boss } from '../entities/Boss'
 
 const JEAN_SPEED = 220
 const JEAN_SIZE = 32
@@ -23,11 +24,14 @@ const RAGE_COOLDOWN_MS = 8000
 const RAGE_SPEED_MULTIPLIER = 1.4
 const RAGE_RANGE_MULTIPLIER = 1.5
 
+const BOSS_SPAWN_DELAY_MS = 1000
+const BOSS_HP = 6
+
 export class PlayScene extends Phaser.Scene {
   private inputController!: InputController
   private jean!: Phaser.GameObjects.Rectangle
   private comboText!: Phaser.GameObjects.Text
-  private hordeText!: Phaser.GameObjects.Text
+  private objectiveText!: Phaser.GameObjects.Text
   private abilityText!: Phaser.GameObjects.Text
   private attackIndicator!: Phaser.GameObjects.Rectangle
 
@@ -36,6 +40,9 @@ export class PlayScene extends Phaser.Scene {
   private defeatedCount = 0
   private spawnTimer = 0
   private hordeCleared = false
+
+  private boss: Boss | null = null
+  private levelComplete = false
 
   private facing = new Phaser.Math.Vector2(1, 0)
   private comboStep = 0
@@ -53,7 +60,7 @@ export class PlayScene extends Phaser.Scene {
     const { width, height } = this.scale
 
     this.add
-      .text(width / 2, 20, 'LE SANGLIER — Jalon 4 (placeholder)', {
+      .text(width / 2, 20, 'LE SANGLIER — Jalon 5 (placeholder)', {
         fontFamily: 'monospace',
         fontSize: '14px',
         color: '#888888',
@@ -63,7 +70,7 @@ export class PlayScene extends Phaser.Scene {
     this.jean = this.add.rectangle(width / 2, height / 2, JEAN_SIZE, JEAN_SIZE, JEAN_COLOR)
     this.attackIndicator = this.add.rectangle(0, 0, 20, 20, 0xffffff).setVisible(false)
 
-    this.hordeText = this.add
+    this.objectiveText = this.add
       .text(width / 2, 44, `Horde : 0/${TOTAL_ENEMIES} vaincus`, {
         fontFamily: 'monospace',
         fontSize: '14px',
@@ -122,6 +129,12 @@ export class PlayScene extends Phaser.Scene {
     for (const enemy of this.enemies) {
       enemy.update(delta, this.jean.x, this.jean.y)
     }
+
+    if (this.boss && !this.boss.isDead) {
+      this.boss.update(delta, this.jean.x, this.jean.y, time, { width, height })
+    }
+
+    this.updateObjectiveText()
   }
 
   private tryActivateRage(time: number): void {
@@ -185,6 +198,22 @@ export class PlayScene extends Phaser.Scene {
     this.enemies.push(new Enemy(this, x, y))
   }
 
+  private spawnBoss(): void {
+    const { width, height } = this.scale
+    // Opposite Jean's offset from the arena center.
+    const x = Phaser.Math.Clamp(width - this.jean.x, SPAWN_MARGIN, width - SPAWN_MARGIN)
+    const y = Phaser.Math.Clamp(height - this.jean.y, SPAWN_MARGIN, height - SPAWN_MARGIN)
+
+    this.boss = new Boss(this, x, y, this.time.now, BOSS_HP)
+  }
+
+  private isInAttackRange(targetX: number, targetY: number, range: number, rageActive: boolean): boolean {
+    const toTarget = new Phaser.Math.Vector2(targetX - this.jean.x, targetY - this.jean.y)
+    const dist = toTarget.length()
+    const inFront = rageActive || dist === 0 || this.facing.dot(toTarget.normalize()) >= ATTACK_COS_THRESHOLD
+    return dist <= range && inFront
+  }
+
   private attack(time: number): void {
     this.comboStep = time - this.lastAttackTime > COMBO_WINDOW_MS ? 1 : (this.comboStep % COMBO_STEPS) + 1
     this.lastAttackTime = time
@@ -200,29 +229,39 @@ export class PlayScene extends Phaser.Scene {
 
     for (const enemy of this.enemies) {
       if (enemy.isDead) continue
-
-      const toEnemy = new Phaser.Math.Vector2(enemy.x - this.jean.x, enemy.y - this.jean.y)
-      const dist = toEnemy.length()
-      const inFront = rageActive || dist === 0 || this.facing.dot(toEnemy.normalize()) >= ATTACK_COS_THRESHOLD
-
-      if (dist <= range && inFront) {
+      if (this.isInAttackRange(enemy.x, enemy.y, range, rageActive)) {
         enemy.kill(this)
         this.defeatedCount += 1
       }
     }
 
-    this.updateHordeText()
+    if (!this.hordeCleared && this.defeatedCount >= TOTAL_ENEMIES) {
+      this.hordeCleared = true
+      this.time.delayedCall(BOSS_SPAWN_DELAY_MS, () => this.spawnBoss())
+    }
+
+    if (this.boss && !this.boss.isDead && this.isInAttackRange(this.boss.x, this.boss.y, range, rageActive)) {
+      const killed = this.boss.hit(this)
+      if (killed) this.levelComplete = true
+    }
   }
 
-  private updateHordeText(): void {
-    if (this.hordeCleared) return
-
-    if (this.defeatedCount >= TOTAL_ENEMIES) {
-      this.hordeCleared = true
-      this.hordeText.setText('Horde vaincue !')
+  private updateObjectiveText(): void {
+    if (this.levelComplete) {
+      this.objectiveText.setText('Niveau terminé !')
       return
     }
 
-    this.hordeText.setText(`Horde : ${this.defeatedCount}/${TOTAL_ENEMIES} vaincus`)
+    if (this.boss) {
+      this.objectiveText.setText(`Boss : PV ${this.boss.currentHp}/${this.boss.maxHitPoints}`)
+      return
+    }
+
+    if (this.hordeCleared) {
+      this.objectiveText.setText('Horde vaincue ! Le boss arrive...')
+      return
+    }
+
+    this.objectiveText.setText(`Horde : ${this.defeatedCount}/${TOTAL_ENEMIES} vaincus`)
   }
 }

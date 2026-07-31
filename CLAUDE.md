@@ -15,9 +15,11 @@ surpuissants.
 
 ## Statut actuel
 
-Jalons 0 à 3 (pipeline, déplacement, attaque, horde) faits. Jalon 4 (rage
-du Moscow Mule) codé, en cours de déploiement — voir
-[ROADMAP.md](ROADMAP.md) pour le détail des cases cochées.
+Jalons 0 à 4 faits. Jalon 5 (boss de fin de niveau) codé, en cours de
+déploiement — voir [ROADMAP.md](ROADMAP.md) pour le détail des cases
+cochées. **Ce jalon complète le MVP** (déplacement + horde + boss = un
+mini-niveau jouable de bout en bout, thème rectangles placeholder — pas
+encore de vrais sprites/assets).
 
 ## Organisation produit
 
@@ -61,14 +63,17 @@ correspond à son objectif — pas quand le code est juste écrit en local.
   capacité spéciale "Rage du Moscow Mule" (touche E, 3s, +40% vitesse,
   coups en 360° portée x1,5, cooldown 8s).
 
-## Premier jalon (MVP)
+## MVP — atteint (Jalon 5)
 
 Un mini-niveau complet et jouable :
 - déplacement de Jean,
 - une horde d'ennemis qui spawnent,
 - un boss simple en fin de niveau.
 
-Boucle courte mais complète, pas juste un prototype technique isolé.
+Boucle courte mais complète, pas un prototype technique isolé. Tout est
+encore en rectangles placeholder (pas de vrais sprites) — la prochaine
+étape naturelle est soit les contrôles tactiles (roadmap), soit du contenu
+au-delà du MVP (plusieurs niveaux, progression, vrais assets).
 
 ## À trancher plus tard
 
@@ -84,14 +89,22 @@ Boucle courte mais complète, pas juste un prototype technique isolé.
   (placeholder rectangle, pas de sprite réel tant que l'outil d'assets IA
   n'est pas choisi), gère son déplacement, sa direction de face (dernière
   direction de mouvement non nulle), son attaque (combo 3 coups, portée +
-  cône devant Jean), le spawner de la horde (vague de 8 ennemis, max 4
-  vivants simultanément, compteur de vaincus), et la capacité Rage
-  (touche E, `consumeAbility()`, cooldown/durée gérés par comparaison de
-  timestamps `time` plutôt que des timers Phaser séparés).
+  cône devant Jean, partagée avec les ennemis et le boss via
+  `isInAttackRange()`), le spawner de la horde (vague de 8 ennemis, max 4
+  vivants simultanément), le spawn et le suivi du boss après la horde, et
+  la capacité Rage (touche E, `consumeAbility()`, cooldown/durée gérés par
+  comparaison de timestamps `time` plutôt que des timers Phaser séparés).
+  `objectiveText` reflète l'état courant (horde → boss → victoire) dans un
+  seul texte, mis à jour chaque frame.
 - `src/entities/Enemy.ts` — ennemi basique : poursuit Jean à vue, s'arrête
   à distance de mêlée, meurt en un coup (pas d'IA plus poussée, pas de PV
   — cohérent avec le thème "un coup de poing suffit"). Le mannequin de
   test du Jalon 2 (`Dummy.ts`) a été retiré, devenu redondant.
+- `src/entities/Boss.ts` — premier ennemi avec de vrais PV (6, seul cas
+  pour l'instant — ne pas ajouter de PV à `Enemy` sans besoin réel). Machine
+  à états `idle`/`telegraph`/`charging` : poursuit comme un ennemi basique,
+  puis périodiquement se fige (télégraphe visuel) avant de charger en
+  ligne droite vers la position de Jean au moment du télégraphe.
 - `src/input/InputController.ts` — abstraction des inputs de mouvement,
   d'attaque et de capacité (clavier flèches/WASD/ZQSD, Espace/clic pour
   attaquer, E pour la capacité — `consumeAttack()`/`consumeAbility()`

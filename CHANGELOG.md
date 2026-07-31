@@ -4,6 +4,17 @@ Une entrée par version déployée sur le lien testable, la plus récente en
 haut. Chaque entrée dit ce qui est réellement jouable/vérifiable dans ce
 build, pas juste ce qui a été codé.
 
+## [Jalon 5] — Le boss
+
+- Boss apparaît 1s après la horde vidée, à l'opposé de la position de Jean
+- 6 PV, affichés à l'écran ; plus gros et plus lent qu'un ennemi basique
+- Pattern : télégraphe visuel puis charge en ligne droite, évitable en
+  bougeant
+- Message "Niveau terminé !" quand le boss est vaincu
+- **MVP atteint** : mini-niveau complet jouable de bout en bout
+  (déplacement → horde → boss)
+- En ligne : https://vianney-d.github.io/le-sanglier/
+
 ## [Jalon 4] — Rage du Moscow Mule
 
 - Capacité spéciale (touche E) : 3s de rage, +40% vitesse, coups en 360°
