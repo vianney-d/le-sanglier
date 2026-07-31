@@ -31,9 +31,10 @@ testable fonctionne, avant tout gameplay.
       en diagonale, borné aux limites de l'écran de jeu
 - [x] Couche d'abstraction des inputs (`InputController`) pour brancher le
       tactile plus tard sans dupliquer la logique de mouvement
-- [ ] Déployé et vérifié sur le lien Pages (desktop + mobile)
+- [x] Déployé sur le lien Pages
+- [ ] Vérifié à l'œil par toi (desktop + mobile)
 
-**Statut** : en cours (code fait, reste le déploiement + vérif en ligne)
+**Statut** : fait côté déploiement, reste ta vérification visuelle
 
 ## Jalons suivants (non détaillés)
 
