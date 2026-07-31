@@ -21,21 +21,30 @@ const MOVE_TOKENS = {
   right: ['arrowright', 'keyd'],
 } as const
 
+const ATTACK_CODES = ['space']
+
 /**
- * Abstracts movement input behind a single interface so a future touch
- * source (virtual joystick) can be swapped in without touching scene code.
+ * Abstracts movement and attack input behind a single interface so a future
+ * touch source (virtual joystick + buttons) can be swapped in without
+ * touching scene code.
  */
 export class InputController {
   private pressed = new Set<string>()
+  private attackQueued = false
 
   constructor(scene: Phaser.Scene) {
     scene.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
-      this.pressed.add(event.code.toLowerCase())
+      const code = event.code.toLowerCase()
+      this.pressed.add(code)
       this.pressed.add(event.key.toLowerCase())
+      if (ATTACK_CODES.includes(code)) this.attackQueued = true
     })
     scene.input.keyboard!.on('keyup', (event: KeyboardEvent) => {
       this.pressed.delete(event.code.toLowerCase())
       this.pressed.delete(event.key.toLowerCase())
+    })
+    scene.input.on('pointerdown', () => {
+      this.attackQueued = true
     })
     // Prevents keys getting stuck "down" if the tab loses focus (e.g. alt-tab)
     // before the keyup event fires.
@@ -61,5 +70,12 @@ export class InputController {
     }
 
     return { x, y }
+  }
+
+  /** Edge-triggered: true at most once per press, regardless of how long it's held. */
+  consumeAttack(): boolean {
+    if (!this.attackQueued) return false
+    this.attackQueued = false
+    return true
   }
 }

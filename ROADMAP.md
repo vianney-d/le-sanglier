@@ -36,9 +36,26 @@ testable fonctionne, avant tout gameplay.
 
 **Statut** : fait côté déploiement, reste ta vérification visuelle
 
+## Jalon 2 — Jean tape
+
+**Objectif** : Jean a un combo de coups testable (pas d'ennemis réels
+avant le Jalon 3 — on ajoute un mannequin passif pour avoir quelque chose
+à frapper et vérifier que ça marche).
+
+- [x] Touche d'attaque (Espace / clic gauche), abstraite comme le
+      mouvement (même logique que pour le futur bouton tactile)
+- [x] Jean garde en mémoire sa dernière direction de mouvement comme
+      direction "de face", pour savoir où porter le coup à l'arrêt
+- [x] Combo 3 coups : chaque appui dans une fenêtre de temps courte après
+      le précédent enchaîne ; sinon ça repart au coup 1
+- [x] Mannequin cible statique dans la scène, qui flashe et pulse
+      visuellement quand touché, pour valider la détection de coup
+- [ ] Déployé et vérifié sur le lien Pages
+
+**Statut** : code fait, reste le déploiement + vérif en ligne
+
 ## Jalons suivants (non détaillés)
 
-- Attaque de base + combo de coups
 - Une horde d'ennemis basique qui spawn et poursuit Jean
 - Capacité spéciale de Jean (à thème Moscow Mule/rage)
 - Boss simple en fin de niveau

@@ -15,7 +15,8 @@ surpuissants.
 
 ## Statut actuel
 
-Jalon 0 (pipeline) fait. Jalon 1 (Jean se déplace) codé et testé en local —
+Jalon 0 (pipeline) et Jalon 1 (Jean se déplace) faits. Jalon 2 (Jean tape,
+combo 3 coups contre un mannequin de test) codé, en cours de déploiement —
 voir [ROADMAP.md](ROADMAP.md) pour le détail des cases cochées.
 
 ## Organisation produit
@@ -82,18 +83,25 @@ Boucle courte mais complète, pas juste un prototype technique isolé.
   scènes.
 - `src/scenes/PlayScene.ts` — scène de jeu actuelle : affiche Jean
   (placeholder rectangle, pas de sprite réel tant que l'outil d'assets IA
-  n'est pas choisi) et gère son déplacement.
-- `src/input/InputController.ts` — abstraction des inputs de mouvement
-  (actuellement clavier flèches/WASD/ZQSD). Détecte chaque touche à la fois
-  par `KeyboardEvent.code` (position physique — la touche à la position
-  QWERTY "W" reste "KeyW" même labellée Z sur AZERTY) et par `event.key`
-  (caractère réellement produit) en complément, car `code` ne remappe pas
-  toujours correctement Q/A et W/Z selon navigateur/OS. Ne pas revenir aux
+  n'est pas choisi), gère son déplacement, sa direction de face (dernière
+  direction de mouvement non nulle), et son attaque (combo 3 coups, portée
+  + cône devant Jean) contre le mannequin de test.
+- `src/entities/Dummy.ts` — cible statique passive (pas d'IA, pas de PV)
+  utilisée pour valider la détection de coup avant que de vrais ennemis
+  n'existent (Jalon 3).
+- `src/input/InputController.ts` — abstraction des inputs de mouvement et
+  d'attaque (actuellement clavier flèches/WASD/ZQSD + Espace/clic pour
+  attaquer, `consumeAttack()` edge-triggered). Détecte chaque touche de
+  mouvement à la fois par `KeyboardEvent.code` (position physique — la
+  touche à la position QWERTY "W" reste "KeyW" même labellée Z sur AZERTY)
+  et par `event.key` (caractère réellement produit) en complément, car
+  `code` ne remappe pas toujours correctement Q/A et W/Z selon
+  navigateur/OS (bug connu ouvert, voir BACKLOG — W/A déclenchent encore
+  un déplacement dans certains cas malgré le fix). Ne pas revenir aux
   `Key`/`CursorKeys` de Phaser (basés sur `keyCode`, déprécié et peu
   fiable) pour cette raison. Toute nouvelle source d'input (tactile) doit
-  exposer la même
-  interface `getDirection()` plutôt que dupliquer la logique dans les
-  scènes.
+  exposer la même interface (`getDirection()`/`consumeAttack()`) plutôt
+  que dupliquer la logique dans les scènes.
 - `vite.config.ts` — `base: './'` (chemins relatifs, nécessaire pour que le
   build fonctionne servi depuis un sous-chemin GitHub Pages).
 - `.github/workflows/deploy.yml` — build + déploiement Pages sur push

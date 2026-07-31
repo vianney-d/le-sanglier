@@ -4,6 +4,14 @@ Une entrée par version déployée sur le lien testable, la plus récente en
 haut. Chaque entrée dit ce qui est réellement jouable/vérifiable dans ce
 build, pas juste ce qui a été codé.
 
+## [Jalon 2] — Jean tape
+
+- Attaque (Espace ou clic gauche), combo 3 coups avec fenêtre de chaînage
+- Jean garde sa dernière direction de mouvement comme direction de face
+- Mannequin cible statique qui flashe/pulse et compte les coups reçus,
+  pour valider la détection de coup (pas encore un vrai ennemi)
+- En ligne : https://vianney-d.github.io/le-sanglier/
+
 ## [Jalon 1] — Jean bouge
 
 - Jean (placeholder rectangle) se déplace au clavier (flèches/WASD), 8
