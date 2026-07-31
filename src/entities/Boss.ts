@@ -1,10 +1,9 @@
 import Phaser from 'phaser'
 
-const SIZE = 64
-const BASE_COLOR = 0x552266
-const TELEGRAPH_COLOR = 0xffaa00
-const CHARGE_COLOR = 0xff2222
-const HIT_FLASH_COLOR = 0xffffff
+const SIZE = 96
+const TELEGRAPH_TINT = 0xffaa00
+const CHARGE_TINT = 0xff2222
+const HIT_FLASH_TINT = 0xffffff
 const HIT_FLASH_DURATION = 100
 const DEATH_DURATION = 300
 
@@ -24,7 +23,7 @@ type State = 'idle' | 'telegraph' | 'charging'
  * telegraph — dodgeable by moving during the flash.
  */
 export class Boss {
-  private readonly rect: Phaser.GameObjects.Rectangle
+  private readonly sprite: Phaser.GameObjects.Sprite
   private readonly maxHp: number
   private hp: number
   private dead = false
@@ -36,18 +35,19 @@ export class Boss {
   private chargeDir = new Phaser.Math.Vector2(0, 0)
 
   constructor(scene: Phaser.Scene, x: number, y: number, startTime: number, hp = 6) {
-    this.rect = scene.add.rectangle(x, y, SIZE, SIZE, BASE_COLOR)
+    this.sprite = scene.add.sprite(x, y, 'boss-idle-0').setDisplaySize(SIZE, SIZE)
+    this.sprite.play('boss-idle')
     this.maxHp = hp
     this.hp = hp
     this.nextActionAt = startTime + INITIAL_DELAY_MS
   }
 
   get x(): number {
-    return this.rect.x
+    return this.sprite.x
   }
 
   get y(): number {
-    return this.rect.y
+    return this.sprite.y
   }
 
   get currentHp(): number {
@@ -71,8 +71,9 @@ export class Boss {
         if (time >= this.nextActionAt) {
           this.state = 'telegraph'
           this.telegraphUntil = time + TELEGRAPH_DURATION_MS
-          this.chargeDir = new Phaser.Math.Vector2(targetX - this.rect.x, targetY - this.rect.y).normalize()
-          this.rect.setFillStyle(TELEGRAPH_COLOR)
+          this.chargeDir = new Phaser.Math.Vector2(targetX - this.sprite.x, targetY - this.sprite.y).normalize()
+          this.sprite.setTint(TELEGRAPH_TINT)
+          this.sprite.play('boss-idle', true)
         }
         break
 
@@ -80,36 +81,43 @@ export class Boss {
         if (time >= this.telegraphUntil) {
           this.state = 'charging'
           this.chargingUntil = time + CHARGE_DURATION_MS
-          this.rect.setFillStyle(CHARGE_COLOR)
+          this.sprite.setTint(CHARGE_TINT)
+          this.sprite.setFlipX(this.chargeDir.x < 0)
+          this.sprite.play('boss-walk', true)
         }
         break
 
       case 'charging': {
         const step = (CHARGE_SPEED * delta) / 1000
-        this.rect.x += this.chargeDir.x * step
-        this.rect.y += this.chargeDir.y * step
+        this.sprite.x += this.chargeDir.x * step
+        this.sprite.y += this.chargeDir.y * step
         if (time >= this.chargingUntil) {
           this.state = 'idle'
           this.nextActionAt = time + CHARGE_INTERVAL_MS
-          this.rect.setFillStyle(BASE_COLOR)
+          this.sprite.clearTint()
         }
         break
       }
     }
 
-    this.rect.x = Phaser.Math.Clamp(this.rect.x, SIZE / 2, bounds.width - SIZE / 2)
-    this.rect.y = Phaser.Math.Clamp(this.rect.y, SIZE / 2, bounds.height - SIZE / 2)
+    this.sprite.x = Phaser.Math.Clamp(this.sprite.x, SIZE / 2, bounds.width - SIZE / 2)
+    this.sprite.y = Phaser.Math.Clamp(this.sprite.y, SIZE / 2, bounds.height - SIZE / 2)
   }
 
   private seek(targetX: number, targetY: number, delta: number): void {
-    const dx = targetX - this.rect.x
-    const dy = targetY - this.rect.y
+    const dx = targetX - this.sprite.x
+    const dy = targetY - this.sprite.y
     const dist = Math.hypot(dx, dy)
-    if (dist <= STOP_DISTANCE) return
+    if (dist <= STOP_DISTANCE) {
+      this.sprite.play('boss-idle', true)
+      return
+    }
 
     const step = (CHASE_SPEED * delta) / 1000
-    this.rect.x += (dx / dist) * step
-    this.rect.y += (dy / dist) * step
+    this.sprite.x += (dx / dist) * step
+    this.sprite.y += (dy / dist) * step
+    this.sprite.setFlipX(dx < 0)
+    this.sprite.play('boss-walk', true)
   }
 
   /** Returns true if this hit killed the boss. */
@@ -117,20 +125,22 @@ export class Boss {
     if (this.dead) return false
 
     this.hp -= 1
-    const baseColor = this.state === 'idle' ? BASE_COLOR : this.state === 'telegraph' ? TELEGRAPH_COLOR : CHARGE_COLOR
-    this.rect.setFillStyle(HIT_FLASH_COLOR)
+    const baseTint = this.state === 'idle' ? null : this.state === 'telegraph' ? TELEGRAPH_TINT : CHARGE_TINT
+    this.sprite.setTint(HIT_FLASH_TINT)
     scene.time.delayedCall(HIT_FLASH_DURATION, () => {
-      if (!this.dead) this.rect.setFillStyle(baseColor)
+      if (this.dead) return
+      if (baseTint === null) this.sprite.clearTint()
+      else this.sprite.setTint(baseTint)
     })
 
     if (this.hp <= 0) {
       this.dead = true
       scene.tweens.add({
-        targets: this.rect,
+        targets: this.sprite,
         scale: 0,
         alpha: 0,
         duration: DEATH_DURATION,
-        onComplete: () => this.rect.destroy(),
+        onComplete: () => this.sprite.destroy(),
       })
       return true
     }

@@ -120,19 +120,23 @@ génère personnage + variations/animations, contrairement à un générateur
 d'images généraliste). Génération faite par l'utilisateur en dehors du
 repo, fichiers fournis ensuite pour intégration.
 
-- [ ] Jean : idle (2-4 frames) + marche (4-6 frames) + attaque (au moins
-      1 anim, idéalement 3 frames pour matcher le combo), vue de côté
-      face à droite, 64×64, fond transparent — le flip gauche/droite se
-      fait en code (`setFlipX`), pas besoin d'art séparé par direction
-- [ ] Ennemi basique : idle/marche (2-4 frames), 48×48, même logique de
-      flip
-- [ ] Boss : idle/poursuite (2-4 frames), 96×96 — le télégraphe/la charge
-      restent gérés par teinte de couleur en code, pas besoin d'anim dédiée
-- [ ] Sprites intégrés dans Phaser (chargement, remplacement des
-      `Rectangle` par des `Sprite`/`AnimatedSprite`)
-- [ ] Déployé et vérifié sur le lien Pages
+- [x] Jean : idle (4 frames) + marche (6 frames) + attaque (6 frames,
+      `cross-punch`), vue de côté face à droite, 64×64 affiché (canvas
+      généré 92×92 avec marge d'animation), fond transparent — le flip
+      gauche/droite se fait en code (`setFlipX`), pas d'art séparé par
+      direction
+- [x] Ennemi basique : idle (4 frames) + marche (6 frames), 48×48
+      affiché, même logique de flip
+- [x] Boss : idle (4 frames) + poursuite/marche (6 frames), 96×96
+      affiché — le télégraphe/la charge restent gérés par teinte de
+      couleur en code (`setTint`), pas d'anim dédiée
+- [x] Sprites intégrés dans Phaser (chargement dans `preload()`,
+      remplacement des `Rectangle` par des `Sprite` animés)
+- [x] Déployé et vérifié sur le lien Pages
 
-**Statut** : en attente des fichiers (générés par l'utilisateur)
+**Statut** : fait — généré via PixelLab.ai (mode standard, vue "side",
+1 génération par personnage + 1 génération par animation en mode
+template, direction "east" uniquement)
 
 ## Jalons suivants (non détaillés)
 

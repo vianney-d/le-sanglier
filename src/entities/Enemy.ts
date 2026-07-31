@@ -1,26 +1,26 @@
 import Phaser from 'phaser'
 
-const SIZE = 28
-const COLOR = 0xaa3333
+const SIZE = 48
 const SPEED = 90
 const STOP_DISTANCE = 40
 const DEATH_DURATION = 150
 
 /** Basic grunt: seeks Jean directly, stops at melee range, dies in one hit. */
 export class Enemy {
-  private readonly rect: Phaser.GameObjects.Rectangle
+  private readonly sprite: Phaser.GameObjects.Sprite
   private dead = false
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
-    this.rect = scene.add.rectangle(x, y, SIZE, SIZE, COLOR)
+    this.sprite = scene.add.sprite(x, y, 'enemy-idle-0').setDisplaySize(SIZE, SIZE)
+    this.sprite.play('enemy-idle')
   }
 
   get x(): number {
-    return this.rect.x
+    return this.sprite.x
   }
 
   get y(): number {
-    return this.rect.y
+    return this.sprite.y
   }
 
   get isDead(): boolean {
@@ -30,14 +30,19 @@ export class Enemy {
   update(delta: number, targetX: number, targetY: number): void {
     if (this.dead) return
 
-    const dx = targetX - this.rect.x
-    const dy = targetY - this.rect.y
+    const dx = targetX - this.sprite.x
+    const dy = targetY - this.sprite.y
     const dist = Math.hypot(dx, dy)
-    if (dist <= STOP_DISTANCE) return
+    if (dist <= STOP_DISTANCE) {
+      this.sprite.play('enemy-idle', true)
+      return
+    }
 
     const step = (SPEED * delta) / 1000
-    this.rect.x += (dx / dist) * step
-    this.rect.y += (dy / dist) * step
+    this.sprite.x += (dx / dist) * step
+    this.sprite.y += (dy / dist) * step
+    this.sprite.setFlipX(dx < 0)
+    this.sprite.play('enemy-walk', true)
   }
 
   kill(scene: Phaser.Scene): void {
@@ -45,11 +50,11 @@ export class Enemy {
     this.dead = true
 
     scene.tweens.add({
-      targets: this.rect,
+      targets: this.sprite,
       scale: 0,
       alpha: 0,
       duration: DEATH_DURATION,
-      onComplete: () => this.rect.destroy(),
+      onComplete: () => this.sprite.destroy(),
     })
   }
 }

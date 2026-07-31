@@ -15,11 +15,10 @@ surpuissants.
 
 ## Statut actuel
 
-Jalons 0 à 4 faits. Jalon 5 (boss de fin de niveau) codé, en cours de
-déploiement — voir [ROADMAP.md](ROADMAP.md) pour le détail des cases
-cochées. **Ce jalon complète le MVP** (déplacement + horde + boss = un
-mini-niveau jouable de bout en bout, thème rectangles placeholder — pas
-encore de vrais sprites/assets).
+Jalons 0 à 6 faits — voir [ROADMAP.md](ROADMAP.md) pour le détail des
+cases cochées. MVP (déplacement + horde + boss) atteint au Jalon 5 ;
+Jalon 6 a remplacé les rectangles placeholder par de vrais sprites pixel
+art (Jean, ennemi basique, boss) générés via PixelLab.ai.
 
 ## Organisation produit
 
@@ -54,10 +53,12 @@ correspond à son objectif — pas quand le code est juste écrit en local.
 - **Style visuel** : 2D pixel art.
 - **Assets** : générés par IA via **PixelLab.ai** (gratuit, spécialisé
   sprites de jeu pixel art — génère personnage + animations, contrairement
-  à un générateur d'images généraliste). Génération faite par l'utilisateur
-  hors du repo ; Claude Code n'a pas d'outil de génération d'image et ne
-  peut qu'intégrer les fichiers fournis. Alternative envisagée : Leonardo.ai
-  (plus généraliste, écarté — moins pensé pour des sprites de jeu).
+  à un générateur d'images généraliste). Le serveur MCP PixelLab (scope
+  user) permet à Claude Code de générer et télécharger directement les
+  sprites depuis la conversation (character standard mode, vue "side",
+  direction "east" uniquement — flip en code pour la gauche, voir Jalon 6
+  dans ROADMAP.md). Alternative envisagée : Leonardo.ai (plus généraliste,
+  écarté — moins pensé pour des sprites de jeu).
 - **Équipe** : développement solo, assets produits via IA.
 - **Contrôles** : développement et équilibrage du gameplay d'abord au
   clavier/souris (itération plus rapide) via une couche d'abstraction des
@@ -67,17 +68,18 @@ correspond à son objectif — pas quand le code est juste écrit en local.
   capacité spéciale "Rage du Moscow Mule" (touche E, 3s, +40% vitesse,
   coups en 360° portée x1,5, cooldown 8s).
 
-## MVP — atteint (Jalon 5)
+## MVP — atteint (Jalon 5), vrais sprites — atteint (Jalon 6)
 
 Un mini-niveau complet et jouable :
 - déplacement de Jean,
 - une horde d'ennemis qui spawnent,
 - un boss simple en fin de niveau.
 
-Boucle courte mais complète, pas un prototype technique isolé. Tout est
-encore en rectangles placeholder (pas de vrais sprites) — la prochaine
-étape naturelle est soit les contrôles tactiles (roadmap), soit du contenu
-au-delà du MVP (plusieurs niveaux, progression, vrais assets).
+Boucle courte mais complète, pas un prototype technique isolé. Jean,
+l'ennemi basique et le boss ont maintenant de vrais sprites pixel art
+animés (Jalon 6) — la prochaine étape naturelle est soit les contrôles
+tactiles (roadmap), soit du contenu au-delà du MVP (plusieurs niveaux,
+progression).
 
 ## À trancher plus tard
 
@@ -88,26 +90,40 @@ au-delà du MVP (plusieurs niveaux, progression, vrais assets).
 
 - `src/main.ts` — point d'entrée, crée le `Phaser.Game` et enregistre les
   scènes.
-- `src/scenes/PlayScene.ts` — scène de jeu actuelle : affiche Jean
-  (placeholder rectangle, pas de sprite réel tant que l'outil d'assets IA
-  n'est pas choisi), gère son déplacement, sa direction de face (dernière
-  direction de mouvement non nulle), son attaque (combo 3 coups, portée +
+- `src/scenes/PlayScene.ts` — scène de jeu actuelle : charge les sprites
+  (`preload()`) et déclare leurs animations (`create()`, via
+  `src/sprites.ts`), affiche Jean (`Sprite` animé, plus rectangle), gère
+  son déplacement, sa direction de face (dernière direction de mouvement
+  non nulle, pilote aussi `setFlipX`), son attaque (combo 3 coups, portée +
   cône devant Jean, partagée avec les ennemis et le boss via
-  `isInAttackRange()`), le spawner de la horde (vague de 8 ennemis, max 4
-  vivants simultanément), le spawn et le suivi du boss après la horde, et
-  la capacité Rage (touche E, `consumeAbility()`, cooldown/durée gérés par
-  comparaison de timestamps `time` plutôt que des timers Phaser séparés).
+  `isInAttackRange()` — joue l'anim `jean-attack`, non bouclée, tant que
+  `attackAnimPlaying` est vrai pour ne pas être interrompue par idle/walk),
+  le spawner de la horde (vague de 8 ennemis, max 4 vivants simultanément),
+  le spawn et le suivi du boss après la horde, et la capacité Rage (touche
+  E, `consumeAbility()`, cooldown/durée gérés par comparaison de timestamps
+  `time` plutôt que des timers Phaser séparés, rendu par `setTint`/
+  `clearTint` plutôt que `setFillStyle` maintenant que Jean est un Sprite).
   `objectiveText` reflète l'état courant (horde → boss → victoire) dans un
   seul texte, mis à jour chaque frame.
-- `src/entities/Enemy.ts` — ennemi basique : poursuit Jean à vue, s'arrête
-  à distance de mêlée, meurt en un coup (pas d'IA plus poussée, pas de PV
-  — cohérent avec le thème "un coup de poing suffit"). Le mannequin de
-  test du Jalon 2 (`Dummy.ts`) a été retiré, devenu redondant.
+- `src/sprites.ts` — helpers partagés `preloadCharacter`/
+  `createCharacterAnims` : chargent les frames d'un personnage
+  (`public/assets/sprites/<perso>/<anim>_<n>.png`) et déclarent les anims
+  Phaser correspondantes (bouclées sauf `attack`). Les anims sont globales
+  au `Game` (pas à la scène), donc `Enemy`/`Boss` peuvent jouer
+  `enemy-idle`/`enemy-walk`/`boss-idle`/`boss-walk` sans les redéclarer.
+- `src/entities/Enemy.ts` — ennemi basique (`Sprite` animé, idle/walk,
+  flip selon le sens de déplacement) : poursuit Jean à vue, s'arrête à
+  distance de mêlée, meurt en un coup (pas d'IA plus poussée, pas de PV —
+  cohérent avec le thème "un coup de poing suffit"). Le mannequin de test
+  du Jalon 2 (`Dummy.ts`) a été retiré, devenu redondant.
 - `src/entities/Boss.ts` — premier ennemi avec de vrais PV (6, seul cas
-  pour l'instant — ne pas ajouter de PV à `Enemy` sans besoin réel). Machine
-  à états `idle`/`telegraph`/`charging` : poursuit comme un ennemi basique,
-  puis périodiquement se fige (télégraphe visuel) avant de charger en
-  ligne droite vers la position de Jean au moment du télégraphe.
+  pour l'instant — ne pas ajouter de PV à `Enemy` sans besoin réel).
+  `Sprite` animé (idle/walk selon qu'il poursuit ou non) ; machine à
+  états `idle`/`telegraph`/`charging` : poursuit comme un ennemi basique,
+  puis périodiquement se fige (télégraphe visuel, `setTint`) avant de
+  charger en ligne droite (`setTint` différent) vers la position de Jean
+  au moment du télégraphe — le télégraphe/la charge restent du tint, pas
+  d'anim dédiée (voir Jalon 6 dans ROADMAP.md).
 - `src/input/InputController.ts` — abstraction des inputs de mouvement,
   d'attaque et de capacité (clavier flèches/WASD/ZQSD, Espace/clic pour
   attaquer, E pour la capacité — `consumeAttack()`/`consumeAbility()`
@@ -126,8 +142,12 @@ au-delà du MVP (plusieurs niveaux, progression, vrais assets).
   build fonctionne servi depuis un sous-chemin GitHub Pages).
 - `.github/workflows/deploy.yml` — build + déploiement Pages sur push
   `main`.
-- Pas encore de dossier `assets/` séparé — à introduire quand Jean/les
-  ennemis ont un vrai sprite plutôt que des rectangles placeholder.
+- `public/assets/sprites/<jean|enemy|boss>/<idle|walk|attack>_<n>.png` —
+  frames de sprites (générés PixelLab.ai, vue "side" face à droite, un
+  fichier par frame plutôt qu'une spritesheet packée — chargés
+  individuellement par `preloadCharacter`). Servi tel quel par Vite
+  (dossier `public/`), donc référencé via `import.meta.env.BASE_URL` dans
+  `src/sprites.ts` pour rester valide sous le sous-chemin GitHub Pages.
 
 ## Pour Claude Code
 

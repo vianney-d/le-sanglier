@@ -4,6 +4,17 @@ Une entrée par version déployée sur le lien testable, la plus récente en
 haut. Chaque entrée dit ce qui est réellement jouable/vérifiable dans ce
 build, pas juste ce qui a été codé.
 
+## [Jalon 6] — Vrais sprites
+
+- Rectangles placeholder remplacés par de vrais sprites pixel art pour
+  Jean, l'ennemi basique et le boss (générés via PixelLab.ai)
+- Jean : idle, marche et attaque (combo) animés ; ennemi et boss : idle
+  et marche/poursuite animés
+- Flip gauche/droite en code (un seul art par personnage, vue de côté)
+- Télégraphe/charge du boss et Rage de Jean toujours rendus par teinte
+  de couleur (`setTint`), pas d'anim dédiée
+- En ligne : https://vianney-d.github.io/le-sanglier/
+
 ## [Jalon 5] — Le boss
 
 - Boss apparaît 1s après la horde vidée, à l'opposé de la position de Jean

@@ -2,10 +2,25 @@ import Phaser from 'phaser'
 import { InputController } from '../input/InputController'
 import { Enemy } from '../entities/Enemy'
 import { Boss } from '../entities/Boss'
+import { preloadCharacter, createCharacterAnims } from '../sprites'
+import type { CharacterAnimConfig } from '../sprites'
 
 const JEAN_SPEED = 220
-const JEAN_SIZE = 32
-const JEAN_COLOR = 0xe8b04b
+const JEAN_SIZE = 64
+
+const JEAN_ANIMS: CharacterAnimConfig = {
+  idle: { frames: 4, frameRate: 6 },
+  walk: { frames: 6, frameRate: 10 },
+  attack: { frames: 6, frameRate: 15 },
+}
+const ENEMY_ANIMS: CharacterAnimConfig = {
+  idle: { frames: 4, frameRate: 6 },
+  walk: { frames: 6, frameRate: 10 },
+}
+const BOSS_ANIMS: CharacterAnimConfig = {
+  idle: { frames: 4, frameRate: 5 },
+  walk: { frames: 6, frameRate: 8 },
+}
 
 const ATTACK_RANGE = 60
 const ATTACK_COS_THRESHOLD = 0.3 // ~72° half-cone in front of Jean
@@ -29,7 +44,7 @@ const BOSS_HP = 6
 
 export class PlayScene extends Phaser.Scene {
   private inputController!: InputController
-  private jean!: Phaser.GameObjects.Rectangle
+  private jean!: Phaser.GameObjects.Sprite
   private comboText!: Phaser.GameObjects.Text
   private objectiveText!: Phaser.GameObjects.Text
   private abilityText!: Phaser.GameObjects.Text
@@ -47,6 +62,7 @@ export class PlayScene extends Phaser.Scene {
   private facing = new Phaser.Math.Vector2(1, 0)
   private comboStep = 0
   private lastAttackTime = -Infinity
+  private attackAnimPlaying = false
 
   private rageActiveUntil = -Infinity
   private rageCooldownUntil = -Infinity
@@ -56,18 +72,32 @@ export class PlayScene extends Phaser.Scene {
     super('play')
   }
 
+  preload() {
+    preloadCharacter(this, 'jean', JEAN_ANIMS)
+    preloadCharacter(this, 'enemy', ENEMY_ANIMS)
+    preloadCharacter(this, 'boss', BOSS_ANIMS)
+  }
+
   create() {
     const { width, height } = this.scale
 
+    createCharacterAnims(this, 'jean', JEAN_ANIMS)
+    createCharacterAnims(this, 'enemy', ENEMY_ANIMS)
+    createCharacterAnims(this, 'boss', BOSS_ANIMS)
+
     this.add
-      .text(width / 2, 20, 'LE SANGLIER — Jalon 5 (placeholder)', {
+      .text(width / 2, 20, 'LE SANGLIER', {
         fontFamily: 'monospace',
         fontSize: '14px',
         color: '#888888',
       })
       .setOrigin(0.5, 0)
 
-    this.jean = this.add.rectangle(width / 2, height / 2, JEAN_SIZE, JEAN_SIZE, JEAN_COLOR)
+    this.jean = this.add.sprite(width / 2, height / 2, 'jean-idle-0').setDisplaySize(JEAN_SIZE, JEAN_SIZE)
+    this.jean.play('jean-idle')
+    this.jean.on('animationcomplete-jean-attack', () => {
+      this.attackAnimPlaying = false
+    })
     this.attackIndicator = this.add.rectangle(0, 0, 20, 20, 0xffffff).setVisible(false)
 
     this.objectiveText = this.add
@@ -100,7 +130,8 @@ export class PlayScene extends Phaser.Scene {
   update(time: number, delta: number) {
     const rageActive = time < this.rageActiveUntil
     if (rageActive !== this.wasRageActive) {
-      this.jean.setFillStyle(rageActive ? RAGE_COLOR : JEAN_COLOR)
+      if (rageActive) this.jean.setTint(RAGE_COLOR)
+      else this.jean.clearTint()
       this.wasRageActive = rageActive
     }
 
@@ -114,6 +145,11 @@ export class PlayScene extends Phaser.Scene {
 
     if (dir.x !== 0 || dir.y !== 0) {
       this.facing.set(dir.x, dir.y).normalize()
+    }
+    this.jean.setFlipX(this.facing.x < 0)
+
+    if (!this.attackAnimPlaying) {
+      this.jean.play(dir.x !== 0 || dir.y !== 0 ? 'jean-walk' : 'jean-idle', true)
     }
 
     if (this.inputController.consumeAttack()) {
@@ -218,6 +254,9 @@ export class PlayScene extends Phaser.Scene {
     this.comboStep = time - this.lastAttackTime > COMBO_WINDOW_MS ? 1 : (this.comboStep % COMBO_STEPS) + 1
     this.lastAttackTime = time
     this.comboText.setText(`Combo ${this.comboStep}/${COMBO_STEPS}`)
+
+    this.attackAnimPlaying = true
+    this.jean.play('jean-attack', true)
 
     this.attackIndicator
       .setPosition(this.jean.x + this.facing.x * 24, this.jean.y + this.facing.y * 24)
