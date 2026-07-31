@@ -50,9 +50,10 @@ avant le Jalon 3 — on ajoute un mannequin passif pour avoir quelque chose
       le précédent enchaîne ; sinon ça repart au coup 1
 - [x] Mannequin cible statique dans la scène, qui flashe et pulse
       visuellement quand touché, pour valider la détection de coup
-- [ ] Déployé et vérifié sur le lien Pages
+- [x] Déployé sur le lien Pages
+- [ ] Vérifié à l'œil par toi
 
-**Statut** : code fait, reste le déploiement + vérif en ligne
+**Statut** : fait côté déploiement, reste ta vérification
 
 ## Jalons suivants (non détaillés)
 
