@@ -15,9 +15,9 @@ surpuissants.
 
 ## Statut actuel
 
-Jalon 0 (pipeline) et Jalon 1 (Jean se déplace) faits. Jalon 2 (Jean tape,
-combo 3 coups contre un mannequin de test) codé, en cours de déploiement —
-voir [ROADMAP.md](ROADMAP.md) pour le détail des cases cochées.
+Jalons 0, 1 et 2 (pipeline, déplacement, attaque) faits. Jalon 3 (horde
+d'ennemis basique) codé, en cours de déploiement — voir
+[ROADMAP.md](ROADMAP.md) pour le détail des cases cochées.
 
 ## Organisation produit
 
@@ -84,11 +84,13 @@ Boucle courte mais complète, pas juste un prototype technique isolé.
 - `src/scenes/PlayScene.ts` — scène de jeu actuelle : affiche Jean
   (placeholder rectangle, pas de sprite réel tant que l'outil d'assets IA
   n'est pas choisi), gère son déplacement, sa direction de face (dernière
-  direction de mouvement non nulle), et son attaque (combo 3 coups, portée
-  + cône devant Jean) contre le mannequin de test.
-- `src/entities/Dummy.ts` — cible statique passive (pas d'IA, pas de PV)
-  utilisée pour valider la détection de coup avant que de vrais ennemis
-  n'existent (Jalon 3).
+  direction de mouvement non nulle), son attaque (combo 3 coups, portée +
+  cône devant Jean), et le spawner de la horde (vague de 8 ennemis, max 4
+  vivants simultanément, compteur de vaincus).
+- `src/entities/Enemy.ts` — ennemi basique : poursuit Jean à vue, s'arrête
+  à distance de mêlée, meurt en un coup (pas d'IA plus poussée, pas de PV
+  — cohérent avec le thème "un coup de poing suffit"). Le mannequin de
+  test du Jalon 2 (`Dummy.ts`) a été retiré, devenu redondant.
 - `src/input/InputController.ts` — abstraction des inputs de mouvement et
   d'attaque (actuellement clavier flèches/WASD/ZQSD + Espace/clic pour
   attaquer, `consumeAttack()` edge-triggered). Détecte chaque touche de
@@ -106,8 +108,8 @@ Boucle courte mais complète, pas juste un prototype technique isolé.
   build fonctionne servi depuis un sous-chemin GitHub Pages).
 - `.github/workflows/deploy.yml` — build + déploiement Pages sur push
   `main`.
-- Pas encore de dossier `entities/`/`assets/` séparé — à introduire quand
-  Jean a un vrai sprite ou qu'un deuxième personnage (ennemi) arrive.
+- Pas encore de dossier `assets/` séparé — à introduire quand Jean/les
+  ennemis ont un vrai sprite plutôt que des rectangles placeholder.
 
 ## Pour Claude Code
 

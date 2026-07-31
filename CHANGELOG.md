@@ -4,6 +4,15 @@ Une entrée par version déployée sur le lien testable, la plus récente en
 haut. Chaque entrée dit ce qui est réellement jouable/vérifiable dans ce
 build, pas juste ce qui a été codé.
 
+## [Jalon 3] — La horde
+
+- Ennemis basiques qui poursuivent Jean et s'arrêtent à distance de mêlée
+- Spawner : vague de 8 ennemis, max 4 vivants simultanément
+- Le combo de Jean tue en un coup, peut toucher plusieurs ennemis alignés
+- Compteur de vaincus + message de victoire quand la horde est vidée
+- Retrait du mannequin de test (Jalon 2), devenu inutile
+- En ligne : https://vianney-d.github.io/le-sanglier/
+
 ## [Jalon 2] — Jean tape
 
 - Attaque (Espace ou clic gauche), combo 3 coups avec fenêtre de chaînage

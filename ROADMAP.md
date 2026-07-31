@@ -55,9 +55,27 @@ avant le Jalon 3 — on ajoute un mannequin passif pour avoir quelque chose
 
 **Statut** : fait côté déploiement, reste ta vérification
 
+## Jalon 3 — La horde
+
+**Objectif** : une vraie mini-vague d'ennemis à vaincre, plutôt que le
+mannequin statique du Jalon 2 (retiré, devenu inutile).
+
+- [x] Ennemi basique (carré rouge) qui poursuit Jean à vue, s'arrête à
+      distance de mêlée
+- [x] Spawner : vague de 8 ennemis au total, apparaissant sur les bords de
+      l'écran, avec un maximum de 4 vivants en même temps (pour garder le
+      rythme gérable)
+- [x] Le combo de Jean tue un ennemi en un coup (thème : Jean casse des
+      tables en marbre d'un coup de poing) ; un swing peut toucher
+      plusieurs ennemis alignés dans son cône
+- [x] Compteur "X/8 vaincus" affiché, message de victoire quand la horde
+      est vidée
+- [ ] Déployé et vérifié sur le lien Pages
+
+**Statut** : code fait, reste le déploiement + vérif en ligne
+
 ## Jalons suivants (non détaillés)
 
-- Une horde d'ennemis basique qui spawn et poursuit Jean
 - Capacité spéciale de Jean (à thème Moscow Mule/rage)
 - Boss simple en fin de niveau
 - → Jalon "mini-niveau complet" (le MVP défini dans CLAUDE.md) atteint quand
