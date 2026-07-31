@@ -110,6 +110,30 @@ CLAUDE.md (déplacement + horde + boss = mini-niveau complet).
 **Ce jalon complète le MVP** défini dans CLAUDE.md (déplacement + horde +
 boss = mini-niveau complet jouable de bout en bout).
 
+## Jalon 6 — Vrais sprites
+
+**Objectif** : remplacer les rectangles placeholder par de vrais sprites
+pixel art pour Jean, l'ennemi basique et le boss.
+
+Outil choisi : **PixelLab.ai** (gratuit, spécialisé sprites de jeu —
+génère personnage + variations/animations, contrairement à un générateur
+d'images généraliste). Génération faite par l'utilisateur en dehors du
+repo, fichiers fournis ensuite pour intégration.
+
+- [ ] Jean : idle (2-4 frames) + marche (4-6 frames) + attaque (au moins
+      1 anim, idéalement 3 frames pour matcher le combo), vue de côté
+      face à droite, 64×64, fond transparent — le flip gauche/droite se
+      fait en code (`setFlipX`), pas besoin d'art séparé par direction
+- [ ] Ennemi basique : idle/marche (2-4 frames), 48×48, même logique de
+      flip
+- [ ] Boss : idle/poursuite (2-4 frames), 96×96 — le télégraphe/la charge
+      restent gérés par teinte de couleur en code, pas besoin d'anim dédiée
+- [ ] Sprites intégrés dans Phaser (chargement, remplacement des
+      `Rectangle` par des `Sprite`/`AnimatedSprite`)
+- [ ] Déployé et vérifié sur le lien Pages
+
+**Statut** : en attente des fichiers (générés par l'utilisateur)
+
 ## Jalons suivants (non détaillés)
 
 - Contrôles tactiles (joystick virtuel + boutons) sur la même abstraction

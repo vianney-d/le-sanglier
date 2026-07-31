@@ -52,8 +52,12 @@ correspond à son objectif — pas quand le code est juste écrit en local.
     PixiJS seul (demanderait de recoder la boucle de jeu, collisions, etc.
     à la main sans bénéfice ici).
 - **Style visuel** : 2D pixel art.
-- **Assets** : générés par IA (outil pas encore choisi — à trancher quand la
-  prod d'assets démarrera réellement).
+- **Assets** : générés par IA via **PixelLab.ai** (gratuit, spécialisé
+  sprites de jeu pixel art — génère personnage + animations, contrairement
+  à un générateur d'images généraliste). Génération faite par l'utilisateur
+  hors du repo ; Claude Code n'a pas d'outil de génération d'image et ne
+  peut qu'intégrer les fichiers fournis. Alternative envisagée : Leonardo.ai
+  (plus généraliste, écarté — moins pensé pour des sprites de jeu).
 - **Équipe** : développement solo, assets produits via IA.
 - **Contrôles** : développement et équilibrage du gameplay d'abord au
   clavier/souris (itération plus rapide) via une couche d'abstraction des
@@ -77,7 +81,6 @@ au-delà du MVP (plusieurs niveaux, progression, vrais assets).
 
 ## À trancher plus tard
 
-- Outil de génération d'assets IA (pixel art).
 - Structure de progression au-delà du premier niveau (arbre de compétences,
   hordes/boss suivants, etc.).
 

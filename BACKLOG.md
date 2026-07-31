@@ -9,10 +9,8 @@ au moment de planifier le jalon suivant.
 
 ## Gameplay
 
-- Choisir le nombre de coups du combo de Jean et leur timing
-- Concevoir la capacité spéciale (piste : rage/Moscow Mule)
-- Définir 2-3 types d'ennemis basiques (pas juste un clone recoloré)
-- Concevoir le premier boss (pattern d'attaque, condition de victoire)
+- Définir 2-3 types d'ennemis basiques (pas juste un clone recoloré) — un
+  seul type existe pour l'instant (Jalon 3)
 
 ## Bugs connus
 
@@ -30,7 +28,6 @@ au moment de planifier le jalon suivant.
 
 ## Technique
 
-- Choisir l'outil de génération d'assets IA (pixel art)
 - Système de particules/feedback visuel pour les coups qui "cassent" des
   choses (cohérent avec le thème "casse une table en marbre")
 - Étudier la perf mobile réelle une fois le jalon 1 en ligne (pas avant —
