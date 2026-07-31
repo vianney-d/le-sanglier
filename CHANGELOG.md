@@ -10,6 +10,9 @@ build, pas juste ce qui a été codé.
   directions, bloqué aux bords de l'écran
 - Couche d'abstraction des inputs (`InputController`) prête pour brancher
   une source tactile plus tard sans dupliquer la logique
+- Fix : détection des touches par position physique (`KeyboardEvent.code`)
+  plutôt que par caractère, pour que ZQSD fonctionne nativement sur clavier
+  AZERTY sans configuration
 - En ligne : https://vianney-d.github.io/le-sanglier/
 
 ## [Jalon 0] — pipeline

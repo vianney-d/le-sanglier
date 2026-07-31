@@ -5,27 +5,49 @@ export interface Direction {
   y: number
 }
 
+// KeyboardEvent.code identifies a key by its physical position, not the
+// character it produces — so the QWERTY "W" position (which is labeled Z on
+// an AZERTY keyboard) still reports "KeyW". Binding to codes rather than
+// Phaser's keyCode-based Key objects makes WASD/ZQSD work automatically on
+// any layout, with no detection or configuration needed.
+const MOVE_CODES = {
+  up: ['ArrowUp', 'KeyW'],
+  down: ['ArrowDown', 'KeyS'],
+  left: ['ArrowLeft', 'KeyA'],
+  right: ['ArrowRight', 'KeyD'],
+} as const
+
 /**
  * Abstracts movement input behind a single interface so a future touch
  * source (virtual joystick) can be swapped in without touching scene code.
  */
 export class InputController {
-  private cursors: Phaser.Types.Input.Keyboard.CursorKeys
-  private wasd: Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>
+  private pressed = new Set<string>()
 
   constructor(scene: Phaser.Scene) {
-    this.cursors = scene.input.keyboard!.createCursorKeys()
-    this.wasd = scene.input.keyboard!.addKeys('W,A,S,D') as typeof this.wasd
+    scene.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
+      this.pressed.add(event.code)
+    })
+    scene.input.keyboard!.on('keyup', (event: KeyboardEvent) => {
+      this.pressed.delete(event.code)
+    })
+    // Prevents keys getting stuck "down" if the tab loses focus (e.g. alt-tab)
+    // before the keyup event fires.
+    window.addEventListener('blur', () => this.pressed.clear())
+  }
+
+  private isDown(codes: readonly string[]): boolean {
+    return codes.some((code) => this.pressed.has(code))
   }
 
   getDirection(): Direction {
     let x = 0
     let y = 0
 
-    if (this.cursors.left.isDown || this.wasd.A.isDown) x -= 1
-    if (this.cursors.right.isDown || this.wasd.D.isDown) x += 1
-    if (this.cursors.up.isDown || this.wasd.W.isDown) y -= 1
-    if (this.cursors.down.isDown || this.wasd.S.isDown) y += 1
+    if (this.isDown(MOVE_CODES.left)) x -= 1
+    if (this.isDown(MOVE_CODES.right)) x += 1
+    if (this.isDown(MOVE_CODES.up)) y -= 1
+    if (this.isDown(MOVE_CODES.down)) y += 1
 
     if (x !== 0 && y !== 0) {
       x *= Math.SQRT1_2

@@ -84,9 +84,14 @@ Boucle courte mais complète, pas juste un prototype technique isolé.
   (placeholder rectangle, pas de sprite réel tant que l'outil d'assets IA
   n'est pas choisi) et gère son déplacement.
 - `src/input/InputController.ts` — abstraction des inputs de mouvement
-  (actuellement clavier flèches/WASD). Toute nouvelle source d'input
-  (tactile) doit exposer la même interface `getDirection()` plutôt que
-  dupliquer la logique dans les scènes.
+  (actuellement clavier flèches/WASD). Détecte les touches par
+  `KeyboardEvent.code` (position physique) et non par caractère, pour que
+  ZQSD fonctionne nativement sur AZERTY sans détection de layout ni
+  configuration — ne pas revenir aux `Key`/`CursorKeys` de Phaser
+  (basés sur `keyCode`, peu fiable selon layout/navigateur) pour cette
+  raison. Toute nouvelle source d'input (tactile) doit exposer la même
+  interface `getDirection()` plutôt que dupliquer la logique dans les
+  scènes.
 - `vite.config.ts` — `base: './'` (chemins relatifs, nécessaire pour que le
   build fonctionne servi depuis un sous-chemin GitHub Pages).
 - `.github/workflows/deploy.yml` — build + déploiement Pages sur push
