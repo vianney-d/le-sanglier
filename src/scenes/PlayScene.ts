@@ -4,6 +4,7 @@ import { Enemy } from '../entities/Enemy'
 
 const JEAN_SPEED = 220
 const JEAN_SIZE = 32
+const JEAN_COLOR = 0xe8b04b
 
 const ATTACK_RANGE = 60
 const ATTACK_COS_THRESHOLD = 0.3 // ~72° half-cone in front of Jean
@@ -16,11 +17,18 @@ const MAX_ALIVE_ENEMIES = 4
 const SPAWN_INTERVAL_MS = 1200
 const SPAWN_MARGIN = 20
 
+const RAGE_COLOR = 0xff5533
+const RAGE_DURATION_MS = 3000
+const RAGE_COOLDOWN_MS = 8000
+const RAGE_SPEED_MULTIPLIER = 1.4
+const RAGE_RANGE_MULTIPLIER = 1.5
+
 export class PlayScene extends Phaser.Scene {
   private inputController!: InputController
   private jean!: Phaser.GameObjects.Rectangle
   private comboText!: Phaser.GameObjects.Text
   private hordeText!: Phaser.GameObjects.Text
+  private abilityText!: Phaser.GameObjects.Text
   private attackIndicator!: Phaser.GameObjects.Rectangle
 
   private enemies: Enemy[] = []
@@ -33,6 +41,10 @@ export class PlayScene extends Phaser.Scene {
   private comboStep = 0
   private lastAttackTime = -Infinity
 
+  private rageActiveUntil = -Infinity
+  private rageCooldownUntil = -Infinity
+  private wasRageActive = false
+
   constructor() {
     super('play')
   }
@@ -41,14 +53,14 @@ export class PlayScene extends Phaser.Scene {
     const { width, height } = this.scale
 
     this.add
-      .text(width / 2, 20, 'LE SANGLIER — Jalon 3 (placeholder)', {
+      .text(width / 2, 20, 'LE SANGLIER — Jalon 4 (placeholder)', {
         fontFamily: 'monospace',
         fontSize: '14px',
         color: '#888888',
       })
       .setOrigin(0.5, 0)
 
-    this.jean = this.add.rectangle(width / 2, height / 2, JEAN_SIZE, JEAN_SIZE, 0xe8b04b)
+    this.jean = this.add.rectangle(width / 2, height / 2, JEAN_SIZE, JEAN_SIZE, JEAN_COLOR)
     this.attackIndicator = this.add.rectangle(0, 0, 20, 20, 0xffffff).setVisible(false)
 
     this.hordeText = this.add
@@ -58,6 +70,14 @@ export class PlayScene extends Phaser.Scene {
         color: '#aa3333',
       })
       .setOrigin(0.5, 0)
+
+    this.abilityText = this.add
+      .text(width / 2, height - 44, 'Rage prête (E)', {
+        fontFamily: 'monospace',
+        fontSize: '14px',
+        color: '#ff5533',
+      })
+      .setOrigin(0.5)
 
     this.comboText = this.add
       .text(width / 2, height - 24, 'Espace / clic pour frapper', {
@@ -71,8 +91,15 @@ export class PlayScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number) {
+    const rageActive = time < this.rageActiveUntil
+    if (rageActive !== this.wasRageActive) {
+      this.jean.setFillStyle(rageActive ? RAGE_COLOR : JEAN_COLOR)
+      this.wasRageActive = rageActive
+    }
+
     const dir = this.inputController.getDirection()
-    const distance = (JEAN_SPEED * delta) / 1000
+    const speed = JEAN_SPEED * (rageActive ? RAGE_SPEED_MULTIPLIER : 1)
+    const distance = (speed * delta) / 1000
     const { width, height } = this.scale
 
     this.jean.x = Phaser.Math.Clamp(this.jean.x + dir.x * distance, JEAN_SIZE / 2, width - JEAN_SIZE / 2)
@@ -86,10 +113,37 @@ export class PlayScene extends Phaser.Scene {
       this.attack(time)
     }
 
+    if (this.inputController.consumeAbility()) {
+      this.tryActivateRage(time)
+    }
+
+    this.updateAbilityText(time, rageActive)
     this.updateSpawner(delta)
     for (const enemy of this.enemies) {
       enemy.update(delta, this.jean.x, this.jean.y)
     }
+  }
+
+  private tryActivateRage(time: number): void {
+    if (time < this.rageCooldownUntil) return // still on cooldown
+
+    this.rageActiveUntil = time + RAGE_DURATION_MS
+    this.rageCooldownUntil = time + RAGE_COOLDOWN_MS
+  }
+
+  private updateAbilityText(time: number, rageActive: boolean): void {
+    if (rageActive) {
+      this.abilityText.setText('RAGE ACTIVE')
+      return
+    }
+
+    if (time < this.rageCooldownUntil) {
+      const remaining = Math.ceil((this.rageCooldownUntil - time) / 1000)
+      this.abilityText.setText(`Rage : ${remaining}s`)
+      return
+    }
+
+    this.abilityText.setText('Rage prête (E)')
   }
 
   private updateSpawner(delta: number): void {
@@ -141,14 +195,17 @@ export class PlayScene extends Phaser.Scene {
       .setVisible(true)
     this.time.delayedCall(ATTACK_INDICATOR_DURATION, () => this.attackIndicator.setVisible(false))
 
+    const rageActive = time < this.rageActiveUntil
+    const range = rageActive ? ATTACK_RANGE * RAGE_RANGE_MULTIPLIER : ATTACK_RANGE
+
     for (const enemy of this.enemies) {
       if (enemy.isDead) continue
 
       const toEnemy = new Phaser.Math.Vector2(enemy.x - this.jean.x, enemy.y - this.jean.y)
       const dist = toEnemy.length()
-      const inFront = dist === 0 || this.facing.dot(toEnemy.normalize()) >= ATTACK_COS_THRESHOLD
+      const inFront = rageActive || dist === 0 || this.facing.dot(toEnemy.normalize()) >= ATTACK_COS_THRESHOLD
 
-      if (dist <= ATTACK_RANGE && inFront) {
+      if (dist <= range && inFront) {
         enemy.kill(this)
         this.defeatedCount += 1
       }

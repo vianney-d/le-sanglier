@@ -4,6 +4,14 @@ Une entrée par version déployée sur le lien testable, la plus récente en
 haut. Chaque entrée dit ce qui est réellement jouable/vérifiable dans ce
 build, pas juste ce qui a été codé.
 
+## [Jalon 4] — Rage du Moscow Mule
+
+- Capacité spéciale (touche E) : 3s de rage, +40% vitesse, coups en 360°
+  autour de Jean (portée x1,5) au lieu du cône devant lui
+- Retour visuel : Jean passe au rouge-orangé pendant la rage
+- Cooldown de 8s affiché à l'écran (prêt / temps restant)
+- En ligne : https://vianney-d.github.io/le-sanglier/
+
 ## [Jalon 3] — La horde
 
 - Ennemis basiques qui poursuivent Jean et s'arrêtent à distance de mêlée

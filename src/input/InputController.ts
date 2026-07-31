@@ -22,15 +22,17 @@ const MOVE_TOKENS = {
 } as const
 
 const ATTACK_CODES = ['space']
+const ABILITY_CODES = ['keye'] // 'E' — same physical position on QWERTY and AZERTY, no fallback needed
 
 /**
- * Abstracts movement and attack input behind a single interface so a future
- * touch source (virtual joystick + buttons) can be swapped in without
- * touching scene code.
+ * Abstracts movement, attack and ability input behind a single interface so
+ * a future touch source (virtual joystick + buttons) can be swapped in
+ * without touching scene code.
  */
 export class InputController {
   private pressed = new Set<string>()
   private attackQueued = false
+  private abilityQueued = false
 
   constructor(scene: Phaser.Scene) {
     scene.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
@@ -38,6 +40,7 @@ export class InputController {
       this.pressed.add(code)
       this.pressed.add(event.key.toLowerCase())
       if (ATTACK_CODES.includes(code)) this.attackQueued = true
+      if (ABILITY_CODES.includes(code)) this.abilityQueued = true
     })
     scene.input.keyboard!.on('keyup', (event: KeyboardEvent) => {
       this.pressed.delete(event.code.toLowerCase())
@@ -76,6 +79,13 @@ export class InputController {
   consumeAttack(): boolean {
     if (!this.attackQueued) return false
     this.attackQueued = false
+    return true
+  }
+
+  /** Edge-triggered: true at most once per press, regardless of how long it's held. */
+  consumeAbility(): boolean {
+    if (!this.abilityQueued) return false
+    this.abilityQueued = false
     return true
   }
 }

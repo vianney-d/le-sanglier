@@ -15,8 +15,8 @@ surpuissants.
 
 ## Statut actuel
 
-Jalons 0, 1 et 2 (pipeline, déplacement, attaque) faits. Jalon 3 (horde
-d'ennemis basique) codé, en cours de déploiement — voir
+Jalons 0 à 3 (pipeline, déplacement, attaque, horde) faits. Jalon 4 (rage
+du Moscow Mule) codé, en cours de déploiement — voir
 [ROADMAP.md](ROADMAP.md) pour le détail des cases cochées.
 
 ## Organisation produit
@@ -57,8 +57,9 @@ correspond à son objectif — pas quand le code est juste écrit en local.
   clavier/souris (itération plus rapide) via une couche d'abstraction des
   inputs ; ajout ensuite d'un joystick virtuel + boutons tactiles pour le
   mobile, branchés sur la même abstraction plutôt que dupliqués.
-- **Moveset de Jean (premier jalon)** : combo de coups + une capacité
-  spéciale à thème (piste : liée au Moscow Mule / à la rage).
+- **Moveset de Jean** : combo 3 coups (portée + cône devant lui) et une
+  capacité spéciale "Rage du Moscow Mule" (touche E, 3s, +40% vitesse,
+  coups en 360° portée x1,5, cooldown 8s).
 
 ## Premier jalon (MVP)
 
@@ -72,8 +73,6 @@ Boucle courte mais complète, pas juste un prototype technique isolé.
 ## À trancher plus tard
 
 - Outil de génération d'assets IA (pixel art).
-- Design détaillé du moveset (nombre de coups du combo, nature exacte de la
-  capacité spéciale).
 - Structure de progression au-delà du premier niveau (arbre de compétences,
   hordes/boss suivants, etc.).
 
@@ -85,15 +84,18 @@ Boucle courte mais complète, pas juste un prototype technique isolé.
   (placeholder rectangle, pas de sprite réel tant que l'outil d'assets IA
   n'est pas choisi), gère son déplacement, sa direction de face (dernière
   direction de mouvement non nulle), son attaque (combo 3 coups, portée +
-  cône devant Jean), et le spawner de la horde (vague de 8 ennemis, max 4
-  vivants simultanément, compteur de vaincus).
+  cône devant Jean), le spawner de la horde (vague de 8 ennemis, max 4
+  vivants simultanément, compteur de vaincus), et la capacité Rage
+  (touche E, `consumeAbility()`, cooldown/durée gérés par comparaison de
+  timestamps `time` plutôt que des timers Phaser séparés).
 - `src/entities/Enemy.ts` — ennemi basique : poursuit Jean à vue, s'arrête
   à distance de mêlée, meurt en un coup (pas d'IA plus poussée, pas de PV
   — cohérent avec le thème "un coup de poing suffit"). Le mannequin de
   test du Jalon 2 (`Dummy.ts`) a été retiré, devenu redondant.
-- `src/input/InputController.ts` — abstraction des inputs de mouvement et
-  d'attaque (actuellement clavier flèches/WASD/ZQSD + Espace/clic pour
-  attaquer, `consumeAttack()` edge-triggered). Détecte chaque touche de
+- `src/input/InputController.ts` — abstraction des inputs de mouvement,
+  d'attaque et de capacité (clavier flèches/WASD/ZQSD, Espace/clic pour
+  attaquer, E pour la capacité — `consumeAttack()`/`consumeAbility()`
+  edge-triggered). Détecte chaque touche de
   mouvement à la fois par `KeyboardEvent.code` (position physique — la
   touche à la position QWERTY "W" reste "KeyW" même labellée Z sur AZERTY)
   et par `event.key` (caractère réellement produit) en complément, car

@@ -75,9 +75,22 @@ mannequin statique du Jalon 2 (retiré, devenu inutile).
 
 **Statut** : fait côté déploiement, reste ta vérification
 
+## Jalon 4 — Rage du Moscow Mule
+
+**Objectif** : une capacité spéciale à thème, activable, qui change
+sensiblement la façon de jouer pendant sa durée.
+
+- [x] Touche dédiée (E), abstraite comme attaque/mouvement
+- [x] Pendant 3s : Jean plus rapide (x1,4), ses coups touchent tout autour
+      de lui (360°, portée x1,5) au lieu du cône devant lui seulement
+- [x] Retour visuel clair : Jean change de couleur pendant la rage
+- [x] Cooldown de 8s après usage, affiché à l'écran (prêt / temps restant)
+- [ ] Déployé et vérifié sur le lien Pages
+
+**Statut** : code fait, reste le déploiement + vérif en ligne
+
 ## Jalons suivants (non détaillés)
 
-- Capacité spéciale de Jean (à thème Moscow Mule/rage)
 - Boss simple en fin de niveau
 - → Jalon "mini-niveau complet" (le MVP défini dans CLAUDE.md) atteint quand
   ces éléments sont assemblés en une boucle jouable de bout en bout
