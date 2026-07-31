@@ -1,30 +1,5 @@
 import Phaser from 'phaser'
-
-class BootScene extends Phaser.Scene {
-  constructor() {
-    super('boot')
-  }
-
-  create() {
-    const { width, height } = this.scale
-
-    this.add
-      .text(width / 2, height / 2 - 20, 'LE SANGLIER', {
-        fontFamily: 'monospace',
-        fontSize: '32px',
-        color: '#e8b04b',
-      })
-      .setOrigin(0.5)
-
-    this.add
-      .text(width / 2, height / 2 + 20, 'pipeline OK — v0.1', {
-        fontFamily: 'monospace',
-        fontSize: '14px',
-        color: '#888888',
-      })
-      .setOrigin(0.5)
-  }
-}
+import { PlayScene } from './scenes/PlayScene'
 
 new Phaser.Game({
   type: Phaser.AUTO,
@@ -36,5 +11,5 @@ new Phaser.Game({
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [BootScene],
+  scene: [PlayScene],
 })

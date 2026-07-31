@@ -15,10 +15,8 @@ surpuissants.
 
 ## Statut actuel
 
-Pipeline technique et organisation produit en place (Jalon 0, voir
-[ROADMAP.md](ROADMAP.md)) ; aucun gameplay encore développé. Le repo contient
-un scaffold Vite + TypeScript + Phaser minimal avec une scène placeholder,
-plus les docs produit décrites ci-dessous.
+Jalon 0 (pipeline) fait. Jalon 1 (Jean se déplace) codé et testé en local —
+voir [ROADMAP.md](ROADMAP.md) pour le détail des cases cochées.
 
 ## Organisation produit
 
@@ -81,14 +79,20 @@ Boucle courte mais complète, pas juste un prototype technique isolé.
 ## Structure actuelle
 
 - `src/main.ts` — point d'entrée, crée le `Phaser.Game` et enregistre les
-  scènes. Une seule scène (`BootScene`, placeholder) pour l'instant.
+  scènes.
+- `src/scenes/PlayScene.ts` — scène de jeu actuelle : affiche Jean
+  (placeholder rectangle, pas de sprite réel tant que l'outil d'assets IA
+  n'est pas choisi) et gère son déplacement.
+- `src/input/InputController.ts` — abstraction des inputs de mouvement
+  (actuellement clavier flèches/WASD). Toute nouvelle source d'input
+  (tactile) doit exposer la même interface `getDirection()` plutôt que
+  dupliquer la logique dans les scènes.
 - `vite.config.ts` — `base: './'` (chemins relatifs, nécessaire pour que le
   build fonctionne servi depuis un sous-chemin GitHub Pages).
 - `.github/workflows/deploy.yml` — build + déploiement Pages sur push
   `main`.
-- Pas encore de dossiers `scenes/`, `entities/`, `assets/` séparés — à
-  introduire quand une deuxième scène ou un premier sprite réel arrive,
-  plutôt que par anticipation.
+- Pas encore de dossier `entities/`/`assets/` séparé — à introduire quand
+  Jean a un vrai sprite ou qu'un deuxième personnage (ennemi) arrive.
 
 ## Pour Claude Code
 

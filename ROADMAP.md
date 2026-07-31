@@ -25,12 +25,15 @@ testable fonctionne, avant tout gameplay.
 
 **Objectif** : Jean se déplace dans une scène vide au clavier/souris.
 
-- [ ] Sprite/placeholder de Jean affiché
-- [ ] Déplacement 8 directions (ou 4, à trancher à l'implémentation)
-- [ ] Couche d'abstraction des inputs (pour brancher le tactile plus tard
-      sans dupliquer la logique)
+- [x] Placeholder de Jean affiché (rectangle, pas encore de sprite réel —
+      dépend du choix d'outil de génération d'assets, voir BACKLOG)
+- [x] Déplacement 8 directions, clavier (flèches + WASD), vitesse normalisée
+      en diagonale, borné aux limites de l'écran de jeu
+- [x] Couche d'abstraction des inputs (`InputController`) pour brancher le
+      tactile plus tard sans dupliquer la logique de mouvement
+- [ ] Déployé et vérifié sur le lien Pages (desktop + mobile)
 
-**Statut** : à faire
+**Statut** : en cours (code fait, reste le déploiement + vérif en ligne)
 
 ## Jalons suivants (non détaillés)
 
