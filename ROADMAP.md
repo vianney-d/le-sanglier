@@ -70,9 +70,10 @@ mannequin statique du Jalon 2 (retiré, devenu inutile).
       plusieurs ennemis alignés dans son cône
 - [x] Compteur "X/8 vaincus" affiché, message de victoire quand la horde
       est vidée
-- [ ] Déployé et vérifié sur le lien Pages
+- [x] Déployé sur le lien Pages
+- [ ] Vérifié à l'œil par toi
 
-**Statut** : code fait, reste le déploiement + vérif en ligne
+**Statut** : fait côté déploiement, reste ta vérification
 
 ## Jalons suivants (non détaillés)
 
