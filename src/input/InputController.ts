@@ -9,15 +9,16 @@ export interface Direction {
 // - `code` identifies a key by physical position (QWERTY's "W" spot reports
 //   "KeyW" even though it's labeled Z on AZERTY) — but some browser/OS
 //   combos don't remap the swapped Q/A and W/Z keys correctly in `code`.
-// - `key` is the actual character produced, which is always correct for
-//   what's printed on the keycap, and catches ZQSD directly when `code`
-//   misbehaves. S and D are identical on both layouts, so they never
-//   exposed this — only the swapped keys (Q/A, W/Z) did.
+// - `key` is the actual character produced. Only used as a fallback for the
+//   two keys that actually move between layouts (Q/A and W/Z, via their
+//   AZERTY characters) — not their QWERTY characters, which would match a
+//   different, unrelated physical key on AZERTY. S/D never needed this:
+//   same character, same position, on both layouts.
 const MOVE_TOKENS = {
-  up: ['arrowup', 'keyw', 'w', 'z'],
-  down: ['arrowdown', 'keys', 's'],
-  left: ['arrowleft', 'keya', 'a', 'q'],
-  right: ['arrowright', 'keyd', 'd'],
+  up: ['arrowup', 'keyw', 'z'],
+  down: ['arrowdown', 'keys'],
+  left: ['arrowleft', 'keya', 'q'],
+  right: ['arrowright', 'keyd'],
 } as const
 
 /**

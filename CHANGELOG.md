@@ -16,6 +16,9 @@ build, pas juste ce qui a été codé.
 - Fix : `code` ne remappait pas correctement Z/Q sur certains
   navigateurs/OS (S/D non affectés car identiques aux deux layouts) —
   ajout de `event.key` en complément pour fiabiliser
+- Fix : W/A (caractères QWERTY) déclenchaient aussi le déplacement sur
+  AZERTY par effet de bord du fallback précédent — retirés, seul le
+  caractère AZERTY (Z/Q) sert de fallback
 - En ligne : https://vianney-d.github.io/le-sanglier/
 
 ## [Jalon 0] — pipeline
