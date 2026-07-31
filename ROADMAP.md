@@ -85,9 +85,10 @@ sensiblement la façon de jouer pendant sa durée.
       de lui (360°, portée x1,5) au lieu du cône devant lui seulement
 - [x] Retour visuel clair : Jean change de couleur pendant la rage
 - [x] Cooldown de 8s après usage, affiché à l'écran (prêt / temps restant)
-- [ ] Déployé et vérifié sur le lien Pages
+- [x] Déployé sur le lien Pages
+- [ ] Vérifié à l'œil par toi
 
-**Statut** : code fait, reste le déploiement + vérif en ligne
+**Statut** : fait côté déploiement, reste ta vérification
 
 ## Jalons suivants (non détaillés)
 
