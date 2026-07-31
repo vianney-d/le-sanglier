@@ -102,9 +102,10 @@ CLAUDE.md (déplacement + horde + boss = mini-niveau complet).
       visuel) puis charge en ligne droite vers la position de Jean à cet
       instant — évitable en bougeant
 - [x] Message de victoire ("Niveau terminé !") quand le boss est vaincu
-- [ ] Déployé et vérifié sur le lien Pages
+- [x] Déployé sur le lien Pages
+- [ ] Vérifié à l'œil par toi
 
-**Statut** : code fait, reste le déploiement + vérif en ligne
+**Statut** : fait côté déploiement, reste ta vérification
 
 **Ce jalon complète le MVP** défini dans CLAUDE.md (déplacement + horde +
 boss = mini-niveau complet jouable de bout en bout).
