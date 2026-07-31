@@ -13,6 +13,9 @@ build, pas juste ce qui a été codé.
 - Fix : détection des touches par position physique (`KeyboardEvent.code`)
   plutôt que par caractère, pour que ZQSD fonctionne nativement sur clavier
   AZERTY sans configuration
+- Fix : `code` ne remappait pas correctement Z/Q sur certains
+  navigateurs/OS (S/D non affectés car identiques aux deux layouts) —
+  ajout de `event.key` en complément pour fiabiliser
 - En ligne : https://vianney-d.github.io/le-sanglier/
 
 ## [Jalon 0] — pipeline
