@@ -14,11 +14,12 @@ testable fonctionne, avant tout gameplay.
 
 - [x] Scaffold Vite + TypeScript + Phaser
 - [x] Scène placeholder qui s'affiche (texte "LE SANGLIER")
-- [ ] Repo GitHub créé et poussé
-- [ ] Workflow GitHub Actions qui build et déploie sur GitHub Pages
-- [ ] Lien Pages ouvert et vérifié sur desktop + mobile
+- [x] Repo GitHub créé et poussé (https://github.com/vianney-d/le-sanglier)
+- [x] Workflow GitHub Actions qui build et déploie sur GitHub Pages
+- [x] Lien Pages vérifié (HTTP 200) — https://vianney-d.github.io/le-sanglier/
+- [ ] Vérifié à l'œil sur mobile par l'utilisateur
 
-**Statut** : en cours
+**Statut** : fait (reste juste une vérification visuelle mobile de ton côté)
 
 ## Jalon 1 — Jean bouge
 

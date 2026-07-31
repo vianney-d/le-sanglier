@@ -8,4 +8,5 @@ build, pas juste ce qui a été codé.
 
 - Scaffold Vite + TypeScript + Phaser
 - Scène placeholder affichant "LE SANGLIER — pipeline OK"
-- (à venir) déploiement GitHub Pages automatique sur push
+- Déploiement GitHub Pages automatique sur push vers `main`
+- En ligne : https://vianney-d.github.io/le-sanglier/
