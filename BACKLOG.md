@@ -26,6 +26,18 @@ au moment de planifier le jalon suivant.
   vérifier quel fichier JS est réellement chargé, et logguer
   `event.code`/`event.key` bruts sur keydown) avant de retoucher le code.
 
+- **Affichage mobile toujours trop petit / mal cadré**, malgré le fix
+  `100vw`/`100vh` sur `html`/`body`/`#game` (voir CHANGELOG, Jalon 6).
+  Vérifié en Playwright (viewport émulé portrait 390×844 et paysage
+  844×390) où le canvas se cadrait correctement — mais pas confirmé sur
+  téléphone réel par l'utilisateur, qui le trouve toujours trop petit.
+  L'émulation de viewport ne suffit donc pas à reproduire le problème ;
+  à diagnostiquer sur device réel (Chrome remote debugging via USB, ou
+  au moins tester la taille de fenêtre/pixel ratio réels) plutôt qu'en
+  devinant depuis un émulateur. Piste possible : `Phaser.Scale.FIT` vs
+  un autre mode d'échelle (`RESIZE`, `ENVELOP`), ou le `devicePixelRatio`
+  qui fausse le calcul de `Scale.FIT`.
+
 ## Technique
 
 - Système de particules/feedback visuel pour les coups qui "cassent" des
