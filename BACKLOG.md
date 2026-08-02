@@ -7,11 +7,6 @@ elle est retirée d'ici.
 Pas de tri par priorité formel pour l'instant — le tri se fait en discussion
 au moment de planifier le jalon suivant.
 
-## Gameplay
-
-- Définir 2-3 types d'ennemis basiques (pas juste un clone recoloré) — un
-  seul type existe pour l'instant (Jalon 3)
-
 ## Bugs connus
 
 - **W et A déclenchent un déplacement alors qu'ils ne devraient pas

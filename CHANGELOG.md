@@ -4,6 +4,14 @@ Une entrée par version déployée sur le lien testable, la plus récente en
 haut. Chaque entrée dit ce qui est réellement jouable/vérifiable dans ce
 build, pas juste ce qui a été codé.
 
+## [Jalon 7] — Diversité d'ennemis
+
+- 2 nouveaux types d'ennemis en plus du grunt : **Rapide** (véloce,
+  meurt en 1 coup) et **Costaud** (lent, encaisse 2 coups, plus gros et
+  armuré) — tirés aléatoirement à chaque spawn de la horde
+- Sprites dédiés générés via PixelLab.ai, idle + marche
+- En ligne : https://vianney-d.github.io/le-sanglier/
+
 ## [Jalon 6] — Vrais sprites
 
 - Rectangles placeholder remplacés par de vrais sprites pixel art pour

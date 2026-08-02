@@ -138,6 +138,28 @@ repo, fichiers fournis ensuite pour intégration.
 1 génération par personnage + 1 génération par animation en mode
 template, direction "east" uniquement)
 
+## Jalon 7 — Diversité d'ennemis
+
+**Objectif** : sortir la horde du clone unique (Jalon 3) — introduire 2
+types d'ennemis supplémentaires avec un comportement distinct, pour
+varier le rythme du combat.
+
+- [x] Ennemi **Rapide** : vitesse nettement supérieure au grunt (170 vs
+      90), meurt en 1 coup comme lui (thème "un coup suffit" préservé) —
+      force à réagir plus vite / esquiver plutôt qu'à foncer dans le tas
+- [x] Ennemi **Costaud** : plus lent que le grunt (55 vs 90), encaisse 2
+      coups avant de mourir (premier ennemi de base à rompre le "1 coup
+      tue" — cohérent en le présentant comme mieux protégé, armuré),
+      sprite plus imposant (64×64 affiché contre 48×48)
+- [x] Sprites dédiés générés via PixelLab (mêmes specs que le Jalon 6 :
+      vue "side", idle + marche)
+- [x] Spawner : à chaque spawn de la vague de 8, le type (grunt/rapide/
+      costaud) est tiré aléatoirement
+- [x] Déployé et vérifié sur le lien Pages
+
+**Statut** : fait — `Enemy.ts` généralisé en un seul type paramétré
+(vitesse/PV/taille/sprite par `EnemyKind` plutôt que 3 classes dupliquées)
+
 ## Jalons suivants (non détaillés)
 
 - Contrôles tactiles (joystick virtuel + boutons) sur la même abstraction

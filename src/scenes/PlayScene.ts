@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { InputController } from '../input/InputController'
 import { Enemy } from '../entities/Enemy'
+import type { EnemyKind } from '../entities/Enemy'
 import { Boss } from '../entities/Boss'
 import { preloadCharacter, createCharacterAnims } from '../sprites'
 import type { CharacterAnimConfig } from '../sprites'
@@ -17,10 +18,20 @@ const ENEMY_ANIMS: CharacterAnimConfig = {
   idle: { frames: 4, frameRate: 6 },
   walk: { frames: 6, frameRate: 10 },
 }
+const ENEMY_FAST_ANIMS: CharacterAnimConfig = {
+  idle: { frames: 4, frameRate: 8 },
+  walk: { frames: 6, frameRate: 14 },
+}
+const ENEMY_TANK_ANIMS: CharacterAnimConfig = {
+  idle: { frames: 4, frameRate: 5 },
+  walk: { frames: 6, frameRate: 7 },
+}
 const BOSS_ANIMS: CharacterAnimConfig = {
   idle: { frames: 4, frameRate: 5 },
   walk: { frames: 6, frameRate: 8 },
 }
+
+const ENEMY_KINDS: EnemyKind[] = ['grunt', 'fast', 'tank']
 
 const ATTACK_RANGE = 60
 const ATTACK_COS_THRESHOLD = 0.3 // ~72° half-cone in front of Jean
@@ -75,6 +86,8 @@ export class PlayScene extends Phaser.Scene {
   preload() {
     preloadCharacter(this, 'jean', JEAN_ANIMS)
     preloadCharacter(this, 'enemy', ENEMY_ANIMS)
+    preloadCharacter(this, 'enemy-fast', ENEMY_FAST_ANIMS)
+    preloadCharacter(this, 'enemy-tank', ENEMY_TANK_ANIMS)
     preloadCharacter(this, 'boss', BOSS_ANIMS)
   }
 
@@ -83,6 +96,8 @@ export class PlayScene extends Phaser.Scene {
 
     createCharacterAnims(this, 'jean', JEAN_ANIMS)
     createCharacterAnims(this, 'enemy', ENEMY_ANIMS)
+    createCharacterAnims(this, 'enemy-fast', ENEMY_FAST_ANIMS)
+    createCharacterAnims(this, 'enemy-tank', ENEMY_TANK_ANIMS)
     createCharacterAnims(this, 'boss', BOSS_ANIMS)
 
     this.add
@@ -231,7 +246,8 @@ export class PlayScene extends Phaser.Scene {
         y = Phaser.Math.Between(SPAWN_MARGIN, height - SPAWN_MARGIN)
     }
 
-    this.enemies.push(new Enemy(this, x, y))
+    const kind = ENEMY_KINDS[Phaser.Math.Between(0, ENEMY_KINDS.length - 1)]
+    this.enemies.push(new Enemy(this, x, y, kind))
   }
 
   private spawnBoss(): void {
@@ -269,8 +285,7 @@ export class PlayScene extends Phaser.Scene {
     for (const enemy of this.enemies) {
       if (enemy.isDead) continue
       if (this.isInAttackRange(enemy.x, enemy.y, range, rageActive)) {
-        enemy.kill(this)
-        this.defeatedCount += 1
+        if (enemy.hit(this)) this.defeatedCount += 1
       }
     }
 

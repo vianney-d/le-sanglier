@@ -15,10 +15,11 @@ surpuissants.
 
 ## Statut actuel
 
-Jalons 0 à 6 faits — voir [ROADMAP.md](ROADMAP.md) pour le détail des
+Jalons 0 à 7 faits — voir [ROADMAP.md](ROADMAP.md) pour le détail des
 cases cochées. MVP (déplacement + horde + boss) atteint au Jalon 5 ;
 Jalon 6 a remplacé les rectangles placeholder par de vrais sprites pixel
-art (Jean, ennemi basique, boss) générés via PixelLab.ai.
+art (Jean, ennemi basique, boss) générés via PixelLab.ai ; Jalon 7 a
+ajouté 2 types d'ennemis (Rapide, Costaud) en plus du grunt.
 
 ## Organisation produit
 
@@ -111,11 +112,17 @@ progression).
   Phaser correspondantes (bouclées sauf `attack`). Les anims sont globales
   au `Game` (pas à la scène), donc `Enemy`/`Boss` peuvent jouer
   `enemy-idle`/`enemy-walk`/`boss-idle`/`boss-walk` sans les redéclarer.
-- `src/entities/Enemy.ts` — ennemi basique (`Sprite` animé, idle/walk,
-  flip selon le sens de déplacement) : poursuit Jean à vue, s'arrête à
-  distance de mêlée, meurt en un coup (pas d'IA plus poussée, pas de PV —
-  cohérent avec le thème "un coup de poing suffit"). Le mannequin de test
-  du Jalon 2 (`Dummy.ts`) a été retiré, devenu redondant.
+- `src/entities/Enemy.ts` — un seul type paramétré par `EnemyKind`
+  (`grunt`/`fast`/`tank`, table `STATS` : vitesse/PV/taille/préfixe de
+  sprite), plutôt que 3 classes dupliquées — les trois partagent le même
+  comportement (poursuite à vue, arrêt à distance de mêlée, `Sprite`
+  animé idle/walk avec flip selon le sens de déplacement). `grunt` et
+  `fast` meurent en un coup (thème "un coup de poing suffit" préservé) ;
+  `tank` est la seule exception avec 2 PV — premier ennemi de base à
+  encaisser plus d'un coup. `hit()` retourne `true` si le coup tue
+  (PlayScene ne compte l'ennemi comme vaincu que dans ce cas). Le
+  mannequin de test du Jalon 2 (`Dummy.ts`) a été retiré, devenu
+  redondant.
 - `src/entities/Boss.ts` — premier ennemi avec de vrais PV (6, seul cas
   pour l'instant — ne pas ajouter de PV à `Enemy` sans besoin réel).
   `Sprite` animé (idle/walk selon qu'il poursuit ou non) ; machine à
